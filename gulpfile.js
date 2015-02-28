@@ -107,6 +107,17 @@ gulp.task('resize', function() {
         .pipe(gulp.dest('dest/screenshots'));
 });
 
+gulp.task('build-home', function() {
+  return gulp.src('Readme.md')
+    .pipe($.markdown())
+    .pipe($.wrap({
+        src: 'site/home.html'
+    }))
+    .pipe($.rename(function(path) {
+        path.basename = 'index';
+    }))
+    .pipe(gulp.dest(config.path.dest));
+});
 
 gulp.task('build-topics', function() {
     var menuList = getTopics();
@@ -167,11 +178,12 @@ gulp.task('build-topics', function() {
 });
 
 gulp.task('watch', function() {
+    gulp.watch('Readme.md', ['build-home']);
     gulp.watch(config.path.markdown, ['build-topics']);
     gulp.watch(config.path.site, ['build-topics']);
 });
 
-gulp.task('server', ['build-topics', 'watch'], function() {
+gulp.task('server', ['build-home', 'build-topics', 'watch'], function() {
     gulp.src(config.path.dest)
         .pipe($.webserver({
             host: config.server.host,
@@ -179,7 +191,7 @@ gulp.task('server', ['build-topics', 'watch'], function() {
             livereload: true,
             directoryListing: false,
             open: true,
-            fallback: 'accessibility-svg.html'
+            fallback: 'index.html'
         }));
 });
 
