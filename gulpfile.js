@@ -119,6 +119,18 @@ gulp.task('build-home', function() {
     .pipe(gulp.dest(config.path.dest));
 });
 
+gulp.task('build-contributing', function() {
+  return gulp.src('contributing.md')
+    .pipe($.markdown())
+    .pipe($.wrap({
+        src: 'site/home.html'
+    }))
+    .pipe($.rename(function(path) {
+        path.basename = 'contributing';
+    }))
+    .pipe(gulp.dest(config.path.dest));
+});
+
 gulp.task('build-topics', function() {
     var menuList = getTopics();
     return gulp.src(config.path.markdown)
@@ -178,12 +190,13 @@ gulp.task('build-topics', function() {
 });
 
 gulp.task('watch', function() {
+    gulp.watch('contributing.md', ['build-contributing']);
     gulp.watch('Readme.md', ['build-home']);
     gulp.watch(config.path.markdown, ['build-topics']);
     gulp.watch(config.path.site, ['build-topics']);
 });
 
-gulp.task('server', ['build-home', 'build-topics', 'watch'], function() {
+gulp.task('server', ['build-home', 'build-contributing', 'build-topics', 'watch'], function() {
     gulp.src(config.path.dest)
         .pipe($.webserver({
             host: config.server.host,
