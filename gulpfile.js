@@ -123,7 +123,7 @@ gulp.task('build-contributing', function() {
   return gulp.src('contributing.md')
     .pipe($.markdown())
     .pipe($.wrap({
-        src: 'site/home.html'
+        src: 'site/contributing.html'
     }))
     .pipe($.rename(function(path) {
         path.basename = 'contributing';
